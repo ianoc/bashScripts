@@ -29,7 +29,7 @@ sbt_do_release() {
   POST_PUSH_HOOK=""
 
   OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
-  while getopts "hrlop:" opt; do
+  while getopts "hrlo:p:" opt; do
     case "$opt" in
         h)
             show_help
