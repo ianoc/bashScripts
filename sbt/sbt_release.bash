@@ -111,6 +111,6 @@ sbt_do_release() {
 
   if [ ! -z "$POST_PUSH_HOOK" ];
     then
-      eval "$POST_PUSH_HOOK $PROJ_HOME $PROJ_NAME"
+      eval "$POST_PUSH_HOOK $PROJ_HOME $PROJ_NAME $NEW_VER"
   fi
 }
