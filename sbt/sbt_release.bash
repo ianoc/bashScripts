@@ -29,7 +29,7 @@ sbt_do_release() {
   POST_PUSH_HOOK=""
 
   OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
-  while getopts "hrlo:p:" opt; do
+  while getopts "hrlo:p:v:" opt; do
     case "$opt" in
         h)
             show_help
@@ -44,6 +44,9 @@ sbt_do_release() {
           ;;
         p)
           POST_PUSH_HOOK=$OPTARG
+          ;;
+        v)
+          CUSTOM_VER=$OPTARG
           ;;
         '?')
             show_help >&2
@@ -85,9 +88,14 @@ sbt_do_release() {
   TS=`python -c "import time; print(long(time.time())*1000L)"`
   OLD_VER=`cat $SBT_VERSION_FILE | grep "$SBT_VERSION_STRING :=" | sed -e 's/^[ A-Za-z:="]*\([0-9.]*\).*/\1/g'`
   NEW_BASE_VER=`echo $OLD_VER | awk -F. '{ print $1 "." $2 "." $3 + 1 }'`
-  NEW_VER="$NEW_BASE_VER-t${TS}-${GIT_HASH}"
+  if [ -n "$CUSTOM_VER" ]
+    then
+      NEW_VER=$CUSTOM_VER
+    else
+      NEW_VER="$NEW_BASE_VER-t${TS}-${GIT_HASH}"
+  fi
 
-  if [ ! -z "$OVERRIDE_RESOLVER_CMD" ]; then
+  if [ -n "$OVERRIDE_RESOLVER_CMD" ]; then
     if [ "`git diff $SBT_BUILD_FILE | wc -l`" -gt 0 ]; then
       echo "Build file has local changes to $SBT_BUILD_FILE, cannot. Quitting."
       echo "==== PRINTING git status ===="
@@ -109,7 +117,7 @@ sbt_do_release() {
       git checkout $SBT_VERSION_FILE || return -1
   fi
 
-  if [ ! -z "$POST_PUSH_HOOK" ];
+  if [ -n "$POST_PUSH_HOOK" ];
     then
       eval "$POST_PUSH_HOOK $PROJ_HOME $PROJ_NAME $NEW_VER"
   fi
