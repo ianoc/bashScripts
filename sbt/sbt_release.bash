@@ -110,10 +110,12 @@ sbt_do_release() {
 
   if [[ $local_release -eq 0 ]]
     then
-      $SBT_RUNNER clean publish || return -1
+      $SBT_RUNNER ++2.10.4 clean publish || return -1
+      # $SBT_RUNNER ++2.11.2 clean publish || return -1
       git checkout $SBT_VERSION_FILE || return -1
     else
-      $SBT_RUNNER clean publishM2 publish-local || return -1
+      $SBT_RUNNER ++2.10.4 clean publishM2 publish-local || return -1
+      # $SBT_RUNNER ++2.11.2 clean publishM2 publish-local || return -1
       git checkout $SBT_VERSION_FILE || return -1
   fi
 
