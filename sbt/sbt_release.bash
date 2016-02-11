@@ -58,7 +58,7 @@ sbt_do_release() {
   shift $((OPTIND-1)) # Shift off the options and optional --.
   valid_sbt_folder || (echo "invalid folder, doesn't look like an sbt project" && return -1)
 
-  SBT_BUILD_FILE='project/Build.scala'
+  SBT_BUILD_FILE='build.sbt'
 
   SBT_VERSION_FILE=""
   SBT_VERSION_STRING=""
